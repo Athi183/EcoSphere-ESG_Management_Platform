@@ -1,1 +1,9 @@
-# Project dependencies
+fastapi[standard]
+sqlalchemy
+alembic
+psycopg2-binary
+pydantic
+pydantic-settings
+passlib[bcrypt]
+python-jose[cryptography]
+python-dotenv
