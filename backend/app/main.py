@@ -1,7 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.core.config import settings
 
-app = FastAPI(title="EcoSphere API Skeleton")
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    version=settings.VERSION,
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,4 +17,4 @@ app.add_middleware(
 
 @app.get("/health")
 def health_check():
-    return {"status": "ok"}
+    return {"status": "ok", "project": settings.PROJECT_NAME, "version": settings.VERSION}
