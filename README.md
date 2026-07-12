@@ -33,10 +33,104 @@ EcoSphere is a comprehensive, AI-driven Environmental, Social, and Governance (E
 
 ---
 
-## 🛠️ Technology Stack
+## 🛠️ Detailed Technology Stack
 
-*   **Backend:** Python, FastAPI, SQLAlchemy, Pydantic, Uvicorn, Google Gemini API
-*   **Frontend:** React, Vite, Tailwind CSS, TanStack React Query, React Router DOM, Recharts, Lucide React, React Markdown
+### Backend
+*   **Language:** Python 3.8+
+*   **Framework:** FastAPI (High performance, async-ready)
+*   **Database ORM:** SQLAlchemy (with SQLite/PostgreSQL support)
+*   **Data Validation:** Pydantic
+*   **Authentication:** JWT (JSON Web Tokens) & Passlib (Bcrypt)
+*   **AI Integration:** Google Generative AI (Gemini API)
+*   **Server:** Uvicorn
+
+### Frontend
+*   **Library:** React
+*   **Build Tool:** Vite (Lightning fast HMR)
+*   **Styling:** Tailwind CSS (Utility-first CSS framework)
+*   **Data Fetching:** TanStack React Query (Automatic caching and background updates)
+*   **Routing:** React Router DOM
+*   **Data Visualization:** Recharts (Composable charting library)
+*   **Icons & Markdown:** Lucide React, React Markdown
+
+---
+
+## 🚀 Getting Started (How to Run)
+
+Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
+
+### Prerequisites
+
+Ensure you have the following installed:
+*   [Python 3.8+](https://www.python.org/downloads/)
+*   [Node.js (v16+) & npm](https://nodejs.org/)
+*   A [Google Gemini API Key](https://aistudio.google.com/) for the AI Copilot.
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Athi183/EcoSphere-ESG_Management_Platform.git
+cd EcoSphere-ESG_Management_Platform
+```
+
+### 2. Backend Setup
+
+Open a new terminal and navigate to the `backend` folder:
+
+```bash
+cd backend
+```
+
+**Create and activate a virtual environment:**
+*   **Windows:** `python -m venv venv` and `venv\Scripts\activate`
+*   **Mac/Linux:** `python3 -m venv venv` and `source venv/bin/activate`
+
+**Install dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+**Configure Environment Variables:**
+Create a `.env` file in the `backend` directory and add your API keys and configuration:
+```env
+# backend/.env
+GOOGLE_API_KEY=your_gemini_api_key_here
+SECRET_KEY=your_secret_key_here
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+```
+
+**Run the backend server:**
+```bash
+uvicorn app.main:app --reload
+```
+The backend API will be available at `http://localhost:8000`. You can view the full Swagger documentation at `http://localhost:8000/docs`.
+
+### 3. Frontend Setup
+
+Open another terminal and navigate to the `frontend` folder:
+
+```bash
+cd frontend
+```
+
+**Install dependencies:**
+```bash
+npm install
+```
+
+**Configure Environment Variables:**
+Create a `.env` file in the `frontend` directory:
+```env
+# frontend/.env
+VITE_API_URL=http://localhost:8000
+```
+
+**Run the frontend development server:**
+```bash
+npm run dev
+```
+The frontend application will be available at `http://localhost:5173`.
 
 ---
 
