@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from typing import List, Optional
@@ -68,6 +68,13 @@ def get_leaderboard(db: Session = Depends(get_db)):
 
 @router.post("/participate")
 def join_activity(data: ParticipationCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    existing = db.query(CSRParticipation).filter(
+        CSRParticipation.user_id == current_user.id,
+        CSRParticipation.activity_id == data.activity_id
+    ).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="You have already joined this activity.")
+
     part = CSRParticipation(
         user_id=current_user.id,
         activity_id=data.activity_id,
@@ -120,6 +127,14 @@ class ChallengeParticipationCreate(BaseModel):
 @router.post("/challenges/participate")
 def join_challenge(data: ChallengeParticipationCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     from app.models.gamification import ChallengeParticipation
+    
+    existing = db.query(ChallengeParticipation).filter(
+        ChallengeParticipation.user_id == current_user.id,
+        ChallengeParticipation.challenge_id == data.challenge_id
+    ).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="You have already joined this challenge.")
+
     part = ChallengeParticipation(
         user_id=current_user.id,
         challenge_id=data.challenge_id,

@@ -188,8 +188,8 @@ const Gamification = () => {
       setProofUrl('');
       setSelectedChallengeToJoin(null);
     },
-    onError: () => {
-      toast.error('Failed to join challenge. Please try again.');
+    onError: (error) => {
+      toast.error(error.response?.data?.detail || 'Failed to join challenge');
     }
   });
 

@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { getCsrActivities, createCsrActivity } from '../../services/socialService';
 import { getCategories } from '../../services/categoryService';
 import { getParticipations, approveParticipation, joinActivity } from '../../services/gamificationService';
+import { useAuth } from '../../contexts/AuthContext';
 
 // --- CSR Activity Modal ---
 const CsrModal = ({ isOpen, onClose }) => {
@@ -100,6 +101,8 @@ const CsrModal = ({ isOpen, onClose }) => {
 
 
 const Social = () => {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const queryClient = useQueryClient();
   const [isCsrModalOpen, setIsCsrModalOpen] = useState(false);
 
@@ -118,6 +121,9 @@ const Social = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['participations'] });
       toast.success('Successfully joined the activity!');
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.detail || 'Failed to join activity');
     }
   });
 
@@ -207,7 +213,9 @@ const Social = () => {
 
       {/* Dynamic Employee Participation Table */}
       <div className="mt-12">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Employee Participation: approval queue</h2>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+          Employee Participation {isAdmin && ': approval queue'}
+        </h2>
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-400 font-semibold">
@@ -217,7 +225,7 @@ const Social = () => {
                 <th className="px-6 py-4">Proof</th>
                 <th className="px-6 py-4">Points</th>
                 <th className="px-6 py-4">Approval</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                {isAdmin && <th className="px-6 py-4 text-right">Actions</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
@@ -234,17 +242,19 @@ const Social = () => {
                       <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-500/50">Approved</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    {part.status === 'PENDING' && (
-                      <button 
-                        onClick={() => approveMutation.mutate(part.id)}
-                        className="px-4 py-1.5 bg-env-600 hover:bg-env-700 text-white font-bold rounded-lg transition-colors text-xs flex items-center gap-1 ml-auto"
-                      >
-                        <Check className="w-3 h-3" />
-                        Approve
-                      </button>
-                    )}
-                  </td>
+                  {isAdmin && (
+                    <td className="px-6 py-4 text-right">
+                      {part.status === 'PENDING' && (
+                        <button 
+                          onClick={() => approveMutation.mutate(part.id)}
+                          className="px-4 py-1.5 bg-env-600 hover:bg-env-700 text-white font-bold rounded-lg transition-colors text-xs flex items-center gap-1 ml-auto"
+                        >
+                          <Check className="w-3 h-3" />
+                          Approve
+                        </button>
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
               {(!participations || participations.length === 0) && (
