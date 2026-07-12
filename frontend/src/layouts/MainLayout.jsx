@@ -21,8 +21,15 @@ const MainLayout = () => {
     { name: 'Social', path: '/social' },
     { name: 'Gamification', path: '/gamification' },
     { name: 'Reports', path: '/reports' },
-    { name: 'Settings', path: '/settings/emission-factors' },
+    { name: 'Settings', path: '/settings/departments', adminOnly: true },
   ];
+
+  const visibleNavItems = navItems.filter(item => {
+    if (item.adminOnly) {
+      return user?.role === 'admin';
+    }
+    return true;
+  });
 
   return (
     <div className="min-h-screen flex flex-col font-sans transition-colors duration-300">
@@ -73,7 +80,7 @@ const MainLayout = () => {
         {/* Secondary Navigation (Tabs) */}
         <div className="px-6 lg:px-8 max-w-[1600px] mx-auto w-full">
           <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
-            {navItems.map((item) => (
+            {visibleNavItems.map((item) => (
               <NavLink
                 key={item.name}
                 to={item.path}

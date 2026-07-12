@@ -1,6 +1,5 @@
 import React from 'react';
 import CrudTable from '../../components/common/CrudTable';
-import SettingsHeader from './SettingsHeader';
 import {
   getEmissionFactors,
   createEmissionFactor,
@@ -64,29 +63,20 @@ const EmissionFactors = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col mb-2">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">System Settings</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">Configure and manage corporate metadata.</p>
-      </div>
-
-      <SettingsHeader />
-
-      <CrudTable
-        title="Emission Factors"
-        subtitle="Manage carbon multipliers for calculating real-time transactional emissions."
-        entityName="Emission Factor"
-        queryKey="emissionFactors"
-        fetchFn={getEmissionFactors}
-        createFn={createEmissionFactor}
-        updateFn={updateEmissionFactor}
-        deleteFn={deleteEmissionFactor}
-        columns={columns}
-        formFields={formFields}
-        deleteWarningField="source_name"
-        themeColor="env"
-      />
-    </div>
+    <CrudTable
+      title="Emission Factors"
+      subtitle="Manage carbon multipliers for calculating real-time transactional emissions."
+      entityName="Emission Factor"
+      queryKey="emissionFactors"
+      fetchFn={getEmissionFactors}
+      createFn={createEmissionFactor}
+      updateFn={updateEmissionFactor}
+      deleteFn={deleteEmissionFactor}
+      columns={columns}
+      formFields={formFields}
+      deleteWarningField="source_name"
+      themeColor="env"
+    />
   );
 };
 
