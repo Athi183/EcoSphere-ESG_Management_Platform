@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.routers import auth, departments, categories, emission_factors, carbon_transactions, dashboard, ai, policies
+from app.routers import auth, departments, categories, emission_factors, carbon_transactions, dashboard, ai, policies, csr_activities
 from app.database.database import engine, Base
 import app.models  # Import models to ensure they are registered
 
@@ -28,6 +28,7 @@ app.include_router(carbon_transactions.router)
 app.include_router(dashboard.router)
 app.include_router(ai.router)
 app.include_router(policies.router)
+app.include_router(csr_activities.router)
 
 @app.get("/health")
 def health_check():

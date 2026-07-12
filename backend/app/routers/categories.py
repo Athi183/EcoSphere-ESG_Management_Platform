@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.routers.auth import get_current_user
@@ -50,10 +50,15 @@ def update_category(category_id: int, cat_in: CategoryUpdate, db: Session = Depe
     return {"success": True, "message": "Category updated successfully", "data": CategoryResponse.model_validate(updated_cat).model_dump()}
 
 @router.delete("/{category_id}", summary="Delete a category", description="Deletes a specific category by its ID.")
-def delete_category(category_id: int, db: Session = Depends(get_db)):
+def delete_category(category_id: int, response: Response, db: Session = Depends(get_db)):
     cat = category_service.get_category_by_id(db, category_id)
     if not cat:
+        response.status_code = 404
         return {"success": False, "message": "Category not found", "data": {}}
     
-    category_service.delete_category(db, cat)
+    err = category_service.delete_category(db, cat)
+    if err:
+        response.status_code = 400
+        return {"success": False, "message": err, "data": {}}
+        
     return {"success": True, "message": "Category deleted successfully", "data": {}}

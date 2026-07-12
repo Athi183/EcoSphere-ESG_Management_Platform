@@ -1,5 +1,6 @@
 import enum
 from sqlalchemy import Column, Integer, String, DateTime, Enum, UniqueConstraint
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database.database import Base
 
@@ -20,6 +21,8 @@ class Category(Base):
     status = Column(Enum(CategoryStatus), default=CategoryStatus.ACTIVE, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    csr_activities = relationship("CSRActivity", back_populates="category")
 
     __table_args__ = (
         UniqueConstraint('name', 'type', name='uq_category_name_type'),
