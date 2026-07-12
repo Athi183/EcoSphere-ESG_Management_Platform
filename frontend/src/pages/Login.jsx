@@ -12,17 +12,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // TEMPORARY HACKATHON SHORTCUT: 
-    // If backend isn't ready yet, let them bypass by clicking login with admin/admin
-    if (email === 'admin' && password === 'admin') {
-      const mockUser = { id: 1, name: 'Admin User', role: 'admin' };
-      localStorage.setItem('access_token', 'mock-token');
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      // Need to reload window to update auth state cleanly
-      window.location.href = '/'; 
-      return;
-    }
 
     try {
       await login(email, password);

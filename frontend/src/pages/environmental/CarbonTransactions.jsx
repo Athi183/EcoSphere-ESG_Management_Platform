@@ -67,6 +67,9 @@ const CarbonTransactions = () => {
     );
   }
 
+  const deptList = departments?.data?.items || departments?.items || (Array.isArray(departments) ? departments : []);
+  const factorList = emissionFactors?.data?.items || emissionFactors?.items || (Array.isArray(emissionFactors) ? emissionFactors : []);
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
@@ -97,7 +100,7 @@ const CarbonTransactions = () => {
                 className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-env-500 focus:border-env-500 outline-none transition-colors bg-white dark:bg-slate-900 dark:text-white"
               >
                 <option value="">Select a department...</option>
-                {departments.map(dept => (
+                {deptList.map(dept => (
                   <option key={dept.id} value={dept.id}>{dept.name}</option>
                 ))}
               </select>
@@ -112,7 +115,7 @@ const CarbonTransactions = () => {
                 className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-env-500 focus:border-env-500 outline-none transition-colors bg-white dark:bg-slate-900 dark:text-white"
               >
                 <option value="">Select a source...</option>
-                {emissionFactors.map(factor => (
+                {factorList.map(factor => (
                   <option key={factor.id} value={factor.id}>
                     {factor.source_name} ({factor.unit})
                   </option>

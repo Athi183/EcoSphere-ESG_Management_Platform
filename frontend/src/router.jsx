@@ -4,6 +4,8 @@ import MainLayout from './layouts/MainLayout';
 import RequireAuth from './components/common/RequireAuth';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Departments from './pages/settings/Departments';
+import Categories from './pages/settings/Categories';
 import EmissionFactors from './pages/settings/EmissionFactors';
 
 import Dashboard from './pages/dashboard/Dashboard';
@@ -41,12 +43,26 @@ export const router = createBrowserRouter([
             element: <CarbonTransactions />
           },
           {
-            path: '/settings/emission-factors',
-            element: <EmissionFactors />
-          },
-          {
             path: '/reports',
             element: <Reports />
+          },
+          // Admin-only Settings Routes
+          {
+            element: <RequireAuth allowedRoles={['admin']} />,
+            children: [
+              {
+                path: '/settings/departments',
+                element: <Departments />
+              },
+              {
+                path: '/settings/categories',
+                element: <Categories />
+              },
+              {
+                path: '/settings/emission-factors',
+                element: <EmissionFactors />
+              }
+            ]
           }
         ]
       }
