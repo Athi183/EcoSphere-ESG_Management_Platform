@@ -40,6 +40,7 @@ backend/app.db
 .env
 .DS_Store
 Thumbs.db
+<<<<<<< HEAD
 .idea/
 .vscode/
 *.suo
@@ -52,3 +53,10 @@ Thumbs.db
 # Custom / Project
 # =========================
 skills/
+=======
+
+# Workspace Rules / Customizations
+skills/
+.agents/
+
+>>>>>>> 58bc470a9aebbc1b6db4539852da8caa5bb0d462

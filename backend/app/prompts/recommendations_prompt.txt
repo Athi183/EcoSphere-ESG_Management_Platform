@@ -1,0 +1,11 @@
+Based on the provided ESG assessment or performance metrics, formulate realistic and actionable business recommendations.
+
+Focus on the following domains:
+1. **Carbon Footprint & Energy Reduction**: Suggest practical efficiency upgrades, renewable energy transitions, or behavioral shifts to lower emissions.
+2. **Social & Employee Well-being**: Propose initiatives for improving diversity, lowering turnover, enhancing safety protocols, or increasing training resources.
+3. **Governance & Accountability**: Recommend policies to enhance transparent reporting, ethical supplier screening, or compliance monitoring.
+
+Guidelines:
+- Each recommendation must be concrete, specific, and realistic for a typical enterprise environment.
+- Prioritize high-impact, cost-effective measures.
+- Use bullet points and group recommendations by category.

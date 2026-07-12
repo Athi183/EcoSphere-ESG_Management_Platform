@@ -1,0 +1,11 @@
+Provide a concise executive summary of the attached ESG document, report, or feedback log.
+
+Your summary must highlight:
+1. **Core Message**: The primary focus of the document.
+2. **Key Findings**: The major metrics, achievements, compliance statuses, or issues discussed.
+3. **Critical Actions**: Important immediate next steps, goals, or targets mentioned.
+
+Guidelines:
+- Keep the summary short (maximum of 2-3 paragraphs or a set of bullet points).
+- Do not introduce external information or make assumptions outside the document content.
+- Ensure the tone is highly professional and objective.
