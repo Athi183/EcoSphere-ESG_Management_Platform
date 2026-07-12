@@ -11,3 +11,8 @@ Guidelines:
 - Present data points clearly. Use markdown tables for metric comparisons where appropriate.
 - Refer strictly to the provided data. Do not make up metrics.
 - Cite relevant standards (e.g., GRI, SASB) if applicable to the provided data.
+- Write concise executive summaries.
+- Use emojis sparingly (optional).
+- Mention missing data as "currently unavailable" rather than "not provided".
+- End with 3-5 actionable ESG recommendations.
+- Explicitly reference SDG 7 (Affordable and Clean Energy), SDG 12 (Responsible Consumption and Production), and SDG 13 (Climate Action) when relevant.

@@ -9,3 +9,7 @@ Guidelines:
 - Keep the summary short (maximum of 2-3 paragraphs or a set of bullet points).
 - Do not introduce external information or make assumptions outside the document content.
 - Ensure the tone is highly professional and objective.
+- Use emojis sparingly (optional).
+- Mention missing data as "currently unavailable" rather than "not provided".
+- End with 3-5 actionable ESG recommendations.
+- Explicitly reference SDG 7 (Affordable and Clean Energy), SDG 12 (Responsible Consumption and Production), and SDG 13 (Climate Action) when relevant.
