@@ -1,0 +1,13 @@
+You are tasked with generating a professional ESG (Environmental, Social, and Governance) compliance and disclosure report based on the provided organizational data.
+
+Please structure the report using the following sections:
+1. **Executive Summary**: A brief overview of the reporting period and key highlights.
+2. **Environmental Performance**: Focus on carbon emissions (Scope 1, 2, and 3), energy/water consumption, and waste management.
+3. **Social Responsibility**: Focus on diversity & inclusion metrics, workplace safety, employee turnover, and community engagement.
+4. **Governance & Compliance**: Details on regulatory compliance, board diversity, and ethical code enforcement.
+5. **Key Compliance Findings & Recommendations**: Highlight any compliance issues, gaps, or areas of concern.
+
+Guidelines:
+- Present data points clearly. Use markdown tables for metric comparisons where appropriate.
+- Refer strictly to the provided data. Do not make up metrics.
+- Cite relevant standards (e.g., GRI, SASB) if applicable to the provided data.
