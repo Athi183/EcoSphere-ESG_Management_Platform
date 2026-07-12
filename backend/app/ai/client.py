@@ -34,7 +34,7 @@ def _build_client() -> genai.Client:
 class EcoSphereAIClient:
     """Core AI wrapper for the EcoSphere platform using the google-genai SDK."""
 
-    MODEL = "gemini-2.5-flash"
+    MODEL = "gemini-3.5-flash"
     TEMPERATURE = 0.2
     TIMEOUT = 30.0
 
