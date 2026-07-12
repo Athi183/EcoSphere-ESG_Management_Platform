@@ -1,0 +1,11 @@
+Analyze the provided ESG datasets and metrics to extract actionable insights.
+
+Your analysis should address:
+1. **Trends & Patterns**: Identify upward or downward trends in emissions, resource consumption, or diversity metrics over time.
+2. **Anomalies & Spikes**: Highlight any sudden spikes or unusual deviations (e.g., unexpected energy consumption increases or drop in diversity metrics) and identify possible correlations.
+3. **Target Tracking**: Compare current metrics against organizational targets (e.g., net-zero goals, emission limits) and estimate progress.
+
+Guidelines:
+- Focus on quantitative observations first.
+- Clearly distinguish between hard data findings and inferred hypotheses.
+- Present your findings in bullet points.
