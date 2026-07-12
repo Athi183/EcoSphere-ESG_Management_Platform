@@ -2,8 +2,19 @@
 
 EcoSphere is a comprehensive, AI-driven Environmental, Social, and Governance (ESG) Management Platform designed to help organizations seamlessly track, analyze, and optimize their sustainability goals. Built with a robust FastAPI backend and a premium, responsive React frontend, it leverages advanced generative AI to provide real-time, actionable insights into corporate sustainability.
 
-## 🚀 Key Features
+## 📸 Screenshots
 
+| Dashboard Overview | Environmental AI Chatbot |
+|:---:|:---:|
+| ![Dashboard](assets/screenshots/dashboard.png) | ![Environmental AI Chatbot](assets/screenshots/environmental_chatbot.png) |
+
+| Admin Approval Queue | Gamification Challenges |
+|:---:|:---:|
+| ![Admin Approval Queue](assets/screenshots/admin_approval.png) | ![Gamification Challenges](assets/screenshots/gamification.png) |
+
+---
+
+## 🚀 Key Features
 ### 🏢 Core Management
 *   **Secure Authentication:** JWT-based user registration and login flows.
 *   **Organizational Setup:** Manage departments, emission categories, and custom emission factors.
