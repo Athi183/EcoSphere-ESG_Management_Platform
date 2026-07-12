@@ -5,6 +5,7 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+<<<<<<< HEAD
     extend: {
       colors: {
         env: {
@@ -25,6 +26,9 @@ export default {
         }
       }
     },
+=======
+    extend: {},
+>>>>>>> 4cacb627b2973d8f21191a2ee5485f3cb6ce23a0
   },
   plugins: [],
 }

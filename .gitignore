@@ -12,6 +12,8 @@ frontend/.DS_Store
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+dist/
+build/
 
 # =========================
 # Backend (Python / FastAPI)
@@ -20,6 +22,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.so
+*.egg-info/
 backend/venv/
 backend/.venv/
 backend/env/
@@ -28,11 +31,15 @@ backend/.pytest_cache/
 backend/alembic.ini
 backend/*.sqlite3
 backend/app.db
+*.db
+*.sqlite3
 
 # =========================
-# OS / IDE / General
+# Environment & OS / IDE
 # =========================
+.env
 .DS_Store
+Thumbs.db
 .idea/
 .vscode/
 *.suo
@@ -40,3 +47,8 @@ backend/app.db
 *.njsproj
 *.sln
 *.sw?
+
+# =========================
+# Custom / Project
+# =========================
+skills/

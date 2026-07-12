@@ -1,11 +1,16 @@
 {
+<<<<<<< HEAD
   "name": "ecosphere-frontend",
+=======
+  "name": "frontend",
+>>>>>>> 4cacb627b2973d8f21191a2ee5485f3cb6ce23a0
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+<<<<<<< HEAD
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
@@ -32,5 +37,27 @@
     "postcss": "^8.4.39",
     "tailwindcss": "^3.4.4",
     "vite": "^5.3.3"
+=======
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.18.1",
+    "lucide-react": "^1.24.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.1",
+    "recharts": "^3.9.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "autoprefixer": "^10.5.2",
+    "oxlint": "^1.71.0",
+    "postcss": "^8.5.17",
+    "tailwindcss": "^4.3.2",
+    "vite": "^8.1.1"
+>>>>>>> 4cacb627b2973d8f21191a2ee5485f3cb6ce23a0
   }
 }

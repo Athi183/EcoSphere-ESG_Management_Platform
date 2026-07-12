@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -73,3 +74,12 @@ export default defineConfig([
 ])
 
 ```
+=======
+# EcoSphere Frontend
+
+Vite + React + TailwindCSS + React Router
+
+## Setup
+`npm install`
+`npm run dev`
+>>>>>>> 4cacb627b2973d8f21191a2ee5485f3cb6ce23a0
