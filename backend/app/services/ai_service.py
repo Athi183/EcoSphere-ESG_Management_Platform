@@ -55,7 +55,9 @@ def determine_prompt(user_message: str) -> str:
         return "smalltalk_prompt.txt"
         
     # Dashboard Questions
-    if "summary" in msg:
+    if "executive_report" in msg or "report_type" in msg:
+        return "executive_report_prompt.txt"
+    elif "summary" in msg:
         return "summary_prompt.txt"
     elif any(k in msg for k in ["recommend", "reduce", "improve"]):
         return "recommendations_prompt.txt"
@@ -66,7 +68,7 @@ def determine_prompt(user_message: str) -> str:
     else:
         return "summary_prompt.txt" # Default fallback per requirements
 
-def generate_ai_response(db: Session, message: str, history: list = None) -> tuple[str, str, str]:
+def generate_ai_response(db: Session, message: str, history: list = None, report_context: dict = None) -> tuple[str, str, str]:
     """
     Orchestrates the AI flow.
     Returns: (ai_response_text, prompt_used, error_msg)
@@ -79,7 +81,10 @@ def generate_ai_response(db: Session, message: str, history: list = None) -> tup
         prompt_name = determine_prompt(message)
         
         # 2. Build human readable context only if necessary
-        if prompt_name in ["greeting_prompt.txt", "identity_prompt.txt", "thankyou_prompt.txt", "smalltalk_prompt.txt"]:
+        if report_context is not None:
+            import json
+            context_str = json.dumps(report_context, indent=2)
+        elif prompt_name in ["greeting_prompt.txt", "identity_prompt.txt", "thankyou_prompt.txt", "smalltalk_prompt.txt"]:
             context_str = "No dashboard context provided for this intent."
         else:
             context_str = build_dashboard_context(db)

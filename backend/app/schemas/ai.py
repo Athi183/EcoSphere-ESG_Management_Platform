@@ -11,6 +11,10 @@ class AIChatRequest(BaseModel):
         description="Conversation history of the last few messages.",
         json_schema_extra={"example": [{"role": "user", "content": "Hi"}, {"role": "assistant", "content": "Hello!"}]}
     )
+    report_context: dict | None = Field(
+        default=None,
+        description="Optional pre-fetched report data to use as context instead of reloading dashboard data."
+    )
 
 class AIChatResponseData(BaseModel):
     response: str

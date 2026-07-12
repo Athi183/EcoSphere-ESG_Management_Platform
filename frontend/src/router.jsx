@@ -8,6 +8,7 @@ import EmissionFactors from './pages/settings/EmissionFactors';
 
 import Dashboard from './pages/dashboard/Dashboard';
 import CarbonTransactions from './pages/environmental/CarbonTransactions';
+import Reports from './pages/reports/Reports';
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
           {
             path: '/settings/emission-factors',
             element: <EmissionFactors />
+          },
+          {
+            path: '/reports',
+            element: <Reports />
           }
         ]
       }
