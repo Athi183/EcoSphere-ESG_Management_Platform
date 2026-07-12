@@ -237,12 +237,14 @@ const Gamification = () => {
         
         {/* Top Actions & Pipeline */}
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
-          <button 
-            onClick={() => { setChallengeToEdit(null); setIsModalOpen(true); }}
-            className="flex items-center gap-2 px-5 py-2.5 bg-env-600 hover:bg-env-700 text-white rounded-lg font-bold transition-colors shrink-0 shadow-sm"
-          >
-            + New Challenge
-          </button>
+          {isAdmin && (
+            <button 
+              onClick={() => { setChallengeToEdit(null); setIsModalOpen(true); }}
+              className="flex items-center gap-2 px-5 py-2.5 bg-env-600 hover:bg-env-700 text-white rounded-lg font-bold transition-colors shrink-0 shadow-sm"
+            >
+              + New Challenge
+            </button>
+          )}
           
           <div className="flex-1 overflow-x-auto pb-2 md:pb-0">
             <div className="flex items-center gap-2 min-w-max">

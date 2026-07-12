@@ -151,12 +151,14 @@ const Social = () => {
         
         {/* Top Actions */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <button 
-            onClick={() => setIsCsrModalOpen(true)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-env-600 hover:bg-env-700 text-white rounded-lg font-bold transition-colors shadow-sm"
-          >
-            + Create Activity
-          </button>
+          {isAdmin && (
+            <button 
+              onClick={() => setIsCsrModalOpen(true)}
+              className="flex items-center gap-2 px-5 py-2.5 bg-env-600 hover:bg-env-700 text-white rounded-lg font-bold transition-colors shadow-sm"
+            >
+              + Create Activity
+            </button>
+          )}
         </div>
 
         {/* CSR Cards Grid */}

@@ -7,8 +7,11 @@ import { Leaf, Loader2, Plus, Trash2 } from 'lucide-react';
 import { transactionService } from '../../services/transactionService';
 import { departmentService } from '../../services/departmentService';
 import { getEmissionFactors } from '../../services/emissionFactorService';
+import { useAuth } from '../../contexts/AuthContext';
 
 const CarbonTransactions = () => {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
@@ -167,19 +170,22 @@ const CarbonTransactions = () => {
                 type="text"
                 {...register("remarks")}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-env-500 focus:border-env-500 outline-none transition-colors bg-white dark:bg-slate-900 dark:text-white"
-                placeholder="E.g., Monthly electricity bill"
+                placeholder="Additional details..."
               />
             </div>
           </div>
-          
-          <div className="pt-2 flex justify-end">
+
+          <div className="flex justify-end pt-2 border-t border-gray-100 dark:border-slate-700 mt-4">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex items-center justify-center py-2 px-6 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-env-600 hover:bg-env-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-env-500 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 bg-env-600 hover:bg-env-700 text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? <Loader2 className="animate-spin h-5 w-5 mr-2" /> : <Leaf className="w-4 h-4 mr-2" />}
-              {isSubmitting ? 'Recording...' : 'Record Transaction'}
+              {isSubmitting ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
+              ) : (
+                <><Plus className="w-4 h-4" /> Save Transaction</>
+              )}
             </button>
           </div>
         </form>

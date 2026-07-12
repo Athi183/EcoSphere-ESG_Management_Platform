@@ -5,8 +5,11 @@ import api from '../../services/api';
 import ReactMarkdown from 'react-markdown';
 import { AlertTriangle, Loader2, Sparkles, RefreshCw, CheckCircle2, TrendingUp, ShieldAlert, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../contexts/AuthContext';
 
 const Reports = () => {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const [activeTab, setActiveTab] = useState('summary');
   const [aiReport, setAiReport] = useState('');
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
