@@ -1,63 +1,38 @@
 {
-<<<<<<< HEAD
   "name": "ecosphere-frontend",
-=======
-  "name": "frontend",
->>>>>>> 4cacb627b2973d8f21191a2ee5485f3cb6ce23a0
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-<<<<<<< HEAD
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.50.0",
-    "axios": "^1.7.2",
+    "axios": "^1.18.1",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
-    "lucide-react": "^0.407.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-hook-form": "^7.52.1",
-    "react-hot-toast": "^2.4.1",
-    "react-router-dom": "^6.24.1",
-    "recharts": "^2.12.7"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
-    "autoprefixer": "^10.4.19",
-    "eslint": "^8.57.0",
-    "eslint-plugin-react": "^7.34.1",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-react-refresh": "^0.4.7",
-    "postcss": "^8.4.39",
-    "tailwindcss": "^3.4.4",
-    "vite": "^5.3.3"
-=======
-    "lint": "oxlint",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "axios": "^1.18.1",
     "lucide-react": "^1.24.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-hook-form": "^7.52.1",
+    "react-hot-toast": "^2.4.1",
     "react-router-dom": "^7.18.1",
     "recharts": "^3.9.2"
   },
   "devDependencies": {
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "autoprefixer": "^10.5.2",
-    "oxlint": "^1.71.0",
+    "@tailwindcss/postcss": "^4.0.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
     "postcss": "^8.5.17",
     "tailwindcss": "^4.3.2",
     "vite": "^8.1.1"
->>>>>>> 4cacb627b2973d8f21191a2ee5485f3cb6ce23a0
   }
 }

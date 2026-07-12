@@ -1,33 +1,45 @@
 import React from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
-import Sidebar from '../components/layout/Sidebar';
-import Header from '../components/layout/Header';
-import { useAuth } from '../context/AuthContext';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { LogOut, Leaf } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 const MainLayout = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  if (isLoading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-gray-50">
-        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-env-600"></div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100">
-      <Sidebar />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-6">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Top Navbar */}
+      <header className="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6 shrink-0">
+        <div className="flex items-center gap-2 text-env-600 font-bold text-xl">
+          <Leaf className="w-6 h-6" /> EcoSphere
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <span className="text-sm text-gray-600">
+            Welcome, <b>{user?.name || 'User'}</b> ({user?.role || 'employee'})
+          </span>
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-red-600 transition-colors"
+          >
+            <LogOut className="w-4 h-4" /> Logout
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="flex-1 p-6">
+        <div className="max-w-7xl mx-auto">
+          {/* Dashboard pages will render here */}
           <Outlet />
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
 };
