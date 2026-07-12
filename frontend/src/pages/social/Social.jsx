@@ -196,13 +196,15 @@ const Social = () => {
                   </div>
                   
                   <div className="mt-auto flex justify-between items-center">
-                    <button 
-                      onClick={() => joinMutation.mutate(activity.id)}
-                      disabled={joinMutation.isPending}
-                      className="px-6 py-2 bg-env-600 hover:bg-env-700 text-white rounded-lg font-bold transition-colors text-sm disabled:opacity-50"
-                    >
-                      Join
-                    </button>
+                    {!isAdmin && (
+                      <button 
+                        onClick={() => joinMutation.mutate(activity.id)}
+                        disabled={joinMutation.isPending}
+                        className="px-6 py-2 bg-env-600 hover:bg-env-700 text-white rounded-lg font-bold transition-colors text-sm disabled:opacity-50"
+                      >
+                        Join
+                      </button>
+                    )}
                   </div>
                 </div>
               );

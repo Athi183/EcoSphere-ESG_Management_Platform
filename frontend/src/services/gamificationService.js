@@ -29,3 +29,13 @@ export const joinChallenge = async (data) => {
   const response = await api.post('/gamification/challenges/participate', data);
   return response.data;
 };
+
+export const getChallengeParticipations = async () => {
+  const response = await api.get('/gamification/challenges/participations');
+  return response.data;
+};
+
+export const approveChallengeParticipation = async (partId, points = 50) => {
+  const response = await api.post(`/gamification/challenges/participations/${partId}/approve?points=${points}`);
+  return response.data;
+};

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Trophy, Star, Clock, Target, Edit2, Trash2, X, Loader2 } from 'lucide-react';
+import { Trophy, Star, Clock, Target, Edit2, Trash2, X, Loader2, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getChallenges, createChallenge, updateChallenge, deleteChallenge } from '../../services/challengeService';
 import { getCategories } from '../../services/categoryService';
-import { getBadges, getLeaderboard, joinChallenge } from '../../services/gamificationService';
+import { getBadges, getLeaderboard, joinChallenge, getChallengeParticipations, approveChallengeParticipation } from '../../services/gamificationService';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
+import { useAuth } from '../../contexts/AuthContext';
 
 const statusConfig = {
   DRAFT: { label: 'Draft', color: 'border-gray-400 bg-gray-50 text-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300', pill: 'bg-white border-gray-300 text-gray-600 dark:bg-slate-800 dark:border-slate-600 dark:text-gray-300' },
@@ -161,6 +162,8 @@ const ChallengeModal = ({ isOpen, onClose, challengeToEdit }) => {
 };
 
 const Gamification = () => {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [challengeToEdit, setChallengeToEdit] = useState(null);
@@ -179,6 +182,7 @@ const Gamification = () => {
 
   const { data: badgesResponse } = useQuery({ queryKey: ['badges'], queryFn: getBadges });
   const { data: leaderboardResponse } = useQuery({ queryKey: ['leaderboard'], queryFn: getLeaderboard });
+  const { data: participations } = useQuery({ queryKey: ['challenge_participations'], queryFn: getChallengeParticipations });
 
   const joinMutation = useMutation({
     mutationFn: joinChallenge,
@@ -201,6 +205,15 @@ const Gamification = () => {
       setDeleteDialog({ isOpen: false, id: null });
     },
     onError: (error) => toast.error(error.response?.data?.message || 'Failed to delete challenge')
+  });
+
+  const approveMutation = useMutation({
+    mutationFn: (partId) => approveChallengeParticipation(partId, 100),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['challenge_participations'] });
+      queryClient.invalidateQueries({ queryKey: ['leaderboard'] });
+      toast.success('Challenge participation approved & points awarded!');
+    }
   });
 
   const allChallenges = challengesData?.data?.items || [];
@@ -303,31 +316,35 @@ const Gamification = () => {
                   </div>
                   
                   <div className="mt-auto pt-4 flex justify-between items-center">
-                    <button 
-                      onClick={() => {
-                        setSelectedChallengeToJoin(challenge);
-                        setIsJoinModalOpen(true);
-                      }}
-                      className="px-6 py-2 bg-env-600 hover:bg-env-700 text-white rounded-lg font-bold transition-colors w-1/2"
-                    >
-                      Join Challenge
-                    </button>
+                    {!isAdmin && (
+                      <button 
+                        onClick={() => {
+                          setSelectedChallengeToJoin(challenge);
+                          setIsJoinModalOpen(true);
+                        }}
+                        className="px-6 py-2 bg-env-600 hover:bg-env-700 text-white rounded-lg font-bold transition-colors w-1/2"
+                      >
+                        Join Challenge
+                      </button>
+                    )}
                     
                     {/* Admin Actions */}
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => handleEdit(challenge)}
-                        className="p-2 text-gray-400 hover:text-blue-600 bg-gray-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:bg-blue-50 rounded-lg transition-colors"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
-                      <button 
-                        onClick={() => setDeleteDialog({ isOpen: true, id: challenge.id })}
-                        className="p-2 text-gray-400 hover:text-red-600 bg-gray-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:bg-red-50 rounded-lg transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
+                    {isAdmin && (
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => handleEdit(challenge)}
+                          className="p-2 text-gray-400 hover:text-blue-600 bg-gray-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:bg-blue-50 rounded-lg transition-colors"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => setDeleteDialog({ isOpen: true, id: challenge.id })}
+                          className="p-2 text-gray-400 hover:text-red-600 bg-gray-50 dark:bg-slate-900 dark:hover:bg-slate-700 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               );
@@ -335,6 +352,64 @@ const Gamification = () => {
           )}
         </div>
 
+      </div>
+
+      {/* Challenge Participation Queue */}
+      <div className="mt-12">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+          Challenge Submissions {isAdmin && ': approval queue'}
+        </h2>
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-gray-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-400 font-semibold">
+              <tr>
+                <th className="px-6 py-4">Employee</th>
+                <th className="px-6 py-4">Challenge</th>
+                <th className="px-6 py-4">Proof</th>
+                <th className="px-6 py-4">Points</th>
+                <th className="px-6 py-4">Approval</th>
+                {isAdmin && <th className="px-6 py-4 text-right">Actions</th>}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
+              {participations?.map(part => (
+                <tr key={part.id} className="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
+                  <td className="px-6 py-4 text-gray-900 dark:text-white font-medium">{part.user_name}</td>
+                  <td className="px-6 py-4 text-gray-600 dark:text-gray-300">{part.challenge_title}</td>
+                  <td className="px-6 py-4 text-env-500 dark:text-env-400 cursor-pointer hover:underline">{part.proof_url || '-'}</td>
+                  <td className="px-6 py-4 text-gray-600 dark:text-gray-300">{part.points_awarded || 0}</td>
+                  <td className="px-6 py-4">
+                    {part.status === 'PENDING' ? (
+                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-500/50">Pending</span>
+                    ) : (
+                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-500/50">Approved</span>
+                    )}
+                  </td>
+                  {isAdmin && (
+                    <td className="px-6 py-4 text-right">
+                      {part.status === 'PENDING' && (
+                        <button 
+                          onClick={() => approveMutation.mutate(part.id)}
+                          className="px-4 py-1.5 bg-env-600 hover:bg-env-700 text-white font-bold rounded-lg transition-colors text-xs flex items-center gap-1 ml-auto"
+                        >
+                          <Check className="w-3 h-3" />
+                          Approve
+                        </button>
+                      )}
+                    </td>
+                  )}
+                </tr>
+              ))}
+              {(!participations || participations.length === 0) && (
+                <tr>
+                  <td colSpan={isAdmin ? 6 : 5} className="py-6 text-center text-gray-500 dark:text-gray-400 text-sm">
+                    No challenge submissions found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Dynamic Modules: Badge Gallery & Leaderboard */}

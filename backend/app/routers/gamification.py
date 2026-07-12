@@ -143,3 +143,50 @@ def join_challenge(data: ChallengeParticipationCreate, db: Session = Depends(get
     db.add(part)
     db.commit()
     return {"success": True, "message": "Joined challenge successfully!"}
+
+class ChallengeParticipationResponse(BaseModel):
+    id: int
+    user_name: str
+    challenge_title: str
+    proof_url: Optional[str]
+    points_awarded: int
+    status: ApprovalStatus
+    created_at: datetime
+    model_config = {"from_attributes": True}
+
+@router.get("/challenges/participations", response_model=List[ChallengeParticipationResponse])
+def get_challenge_participations(db: Session = Depends(get_db)):
+    from app.models.gamification import ChallengeParticipation
+    parts = db.query(ChallengeParticipation).order_by(desc(ChallengeParticipation.created_at)).all()
+    res = []
+    for p in parts:
+        res.append(ChallengeParticipationResponse(
+            id=p.id,
+            user_name=p.user.full_name if p.user else "Unknown",
+            challenge_title=p.challenge.title if p.challenge else "Unknown",
+            proof_url=p.proof_url,
+            points_awarded=p.points_awarded,
+            status=p.status,
+            created_at=p.created_at
+        ))
+    return res
+
+@router.post("/challenges/participations/{part_id}/approve")
+def approve_challenge_participation(part_id: int, points: int = 50, db: Session = Depends(get_db)):
+    from app.models.gamification import ChallengeParticipation
+    part = db.query(ChallengeParticipation).filter(ChallengeParticipation.id == part_id).first()
+    if not part:
+        return {"success": False, "message": "Participation not found"}
+    
+    part.status = ApprovalStatus.APPROVED
+    part.points_awarded = points
+    
+    stat = db.query(UserStat).filter(UserStat.user_id == part.user_id).first()
+    if not stat:
+        stat = UserStat(user_id=part.user_id, total_xp=points, department="General")
+        db.add(stat)
+    else:
+        stat.total_xp += points
+        
+    db.commit()
+    return {"success": True, "message": "Approved!"}
