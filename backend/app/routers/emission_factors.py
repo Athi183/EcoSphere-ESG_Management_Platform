@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.routers.auth import get_current_user
@@ -45,11 +45,16 @@ def update_emission_factor(ef_id: int, ef_in: EmissionFactorUpdate, db: Session 
     updated_ef = ef_service.update_emission_factor(db, ef, ef_in)
     return {"success": True, "message": "Emission factor updated successfully", "data": EmissionFactorResponse.model_validate(updated_ef).model_dump()}
 
-@router.delete("/{ef_id}", summary="Delete an Emission Factor", description="Deletes a specific emission factor by its ID.")
-def delete_emission_factor(ef_id: int, db: Session = Depends(get_db)):
+@router.delete("/{ef_id}")
+def delete_emission_factor(ef_id: int, response: Response, db: Session = Depends(get_db)):
     ef = ef_service.get_emission_factor_by_id(db, ef_id)
     if not ef:
+        response.status_code = 404
         return {"success": False, "message": "Emission factor not found", "data": {}}
     
-    ef_service.delete_emission_factor(db, ef)
+    err = ef_service.delete_emission_factor(db, ef)
+    if err:
+        response.status_code = 400
+        return {"success": False, "message": err, "data": {}}
+        
     return {"success": True, "message": "Emission factor deleted successfully", "data": {}}
