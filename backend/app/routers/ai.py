@@ -17,7 +17,7 @@ router = APIRouter(
     description="Send a message to the AI. The AI automatically receives live dashboard context and answers accordingly."
 )
 def ai_chat(request: AIChatRequest, response: Response, db: Session = Depends(get_db)):
-    ai_resp, prompt_used, error = generate_ai_response(db, request.message)
+    ai_resp, prompt_used, error = generate_ai_response(db, request.message, request.history, request.report_context)
     if error:
         response.status_code = 503
         return {"success": False, "message": error}

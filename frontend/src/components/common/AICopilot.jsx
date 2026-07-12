@@ -27,17 +27,31 @@ const AICopilot = () => {
     }
   }, [messages, isOpen]);
 
-  const handleSend = async (e) => {
-    e.preventDefault();
-    if (!input.trim() || isLoading) return;
+  const SUGGESTIONS = [
+    'Analyze our emissions',
+    'Recommend improvements',
+    'Generate ESG Summary',
+    'Which department has the highest emissions?',
+  ];
 
-    const userMessage = { id: Date.now(), role: 'user', content: input.trim() };
+  const handleSend = async (e, forcedInput = null) => {
+    if (e) e.preventDefault();
+    const textToSend = forcedInput || input;
+    if (!textToSend.trim() || isLoading) return;
+
+    const userMessage = { id: Date.now(), role: 'user', content: textToSend.trim() };
     setMessages((prev) => [...prev, userMessage]);
-    setInput('');
+    if (!forcedInput) setInput('');
     setIsLoading(true);
 
     try {
-      const response = await sendChatMessage(userMessage.content);
+      // Get the last 6 messages excluding the welcome message and errors
+      const historyToSend = messages
+        .filter(m => m.id !== 1 && !m.isError)
+        .slice(-6)
+        .map(m => ({ role: m.role, content: m.content }));
+
+      const response = await sendChatMessage(userMessage.content, historyToSend);
       const aiMessage = {
         id: Date.now() + 1,
         role: 'assistant',
@@ -48,13 +62,17 @@ const AICopilot = () => {
       const errorMessage = {
         id: Date.now() + 1,
         role: 'assistant',
-        content: 'Sorry, I encountered an error while processing your request. Please try again.',
+        content: "Sorry, I'm currently unable to generate a response. Please try again in a moment.",
         isError: true,
       };
       setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    handleSend(null, suggestion);
   };
 
   return (
@@ -131,6 +149,23 @@ const AICopilot = () => {
                 </div>
               </div>
             ))}
+            {messages.length === 1 && (
+              <div className="flex flex-col gap-2 mt-4 max-w-[85%]">
+                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium ml-1">Suggested Questions</p>
+                <div className="flex flex-wrap gap-2">
+                  {SUGGESTIONS.map((suggestion, idx) => (
+                    <button
+                      key={idx}
+                      disabled={isLoading}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className="text-left text-xs bg-white dark:bg-slate-800 border border-env-200 dark:border-env-800 hover:border-env-400 dark:hover:border-env-600 hover:bg-env-50 dark:hover:bg-slate-700 text-env-700 dark:text-env-300 rounded-lg px-3 py-2 transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-white dark:bg-slate-800 text-slate-500 rounded-2xl rounded-bl-none px-4 py-3 shadow-sm border border-slate-100 dark:border-slate-700 flex items-center gap-2">

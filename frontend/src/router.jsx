@@ -10,6 +10,7 @@ import Dashboard from './pages/dashboard/Dashboard';
 import CarbonTransactions from './pages/environmental/CarbonTransactions';
 import Gamification from './pages/gamification/Gamification';
 import Social from './pages/social/Social';
+import Reports from './pages/reports/Reports';
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ export const router = createBrowserRouter([
           {
             path: '/social',
             element: <Social />
+          },
+          {
+            path: '/reports',
+            element: <Reports />
           }
         ]
       }

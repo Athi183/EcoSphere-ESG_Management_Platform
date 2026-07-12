@@ -1,6 +1,6 @@
 import api from './api';
 
-export const sendChatMessage = async (message) => {
-  const response = await api.post('/ai/chat', { message });
+export const sendChatMessage = async (message, history = []) => {
+  const response = await api.post('/ai/chat', { message, history });
   return response.data;
 };
