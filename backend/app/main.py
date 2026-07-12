@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.routers import auth, departments, categories
+from app.routers import auth, departments, categories, emission_factors
 from app.database.database import engine, Base
 import app.models  # Import models to ensure they are registered
 
@@ -23,6 +23,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(departments.router)
 app.include_router(categories.router)
+app.include_router(emission_factors.router)
 
 @app.get("/health")
 def health_check():
