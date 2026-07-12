@@ -112,3 +112,19 @@ def approve_participation(part_id: int, points: int = 50, db: Session = Depends(
         
     db.commit()
     return {"success": True, "message": "Approved!"}
+
+class ChallengeParticipationCreate(BaseModel):
+    challenge_id: int
+    proof_url: Optional[str] = None
+
+@router.post("/challenges/participate")
+def join_challenge(data: ChallengeParticipationCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    from app.models.gamification import ChallengeParticipation
+    part = ChallengeParticipation(
+        user_id=current_user.id,
+        challenge_id=data.challenge_id,
+        proof_url=data.proof_url
+    )
+    db.add(part)
+    db.commit()
+    return {"success": True, "message": "Joined challenge successfully!"}
