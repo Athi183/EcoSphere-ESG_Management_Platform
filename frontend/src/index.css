@@ -1,3 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-env-500: #10B981;
+  --color-env-600: #059669;
+  --color-social-500: #3B82F6;
+  --color-social-600: #2563EB;
+  --color-gov-500: #8B5CF6;
+  --color-gov-600: #7C3AED;
+  --color-game-500: #F59E0B;
+  --color-game-600: #D97706;
+}

@@ -1,0 +1,12 @@
+# NOTE: Frontend dependencies in React/Vite are managed by `package.json` instead of this file!
+# 
+# To install all the required packages for the frontend, you do NOT use `pip install`.
+# Instead, make sure you have Node.js installed, then run the following command in your terminal:
+#
+#    npm install
+#
+# This will automatically read `package.json` and download everything into the `node_modules` folder.
+# After that, you can start the server by running:
+#
+#    npm run dev
+#
