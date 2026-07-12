@@ -52,14 +52,22 @@ class EcoSphereAIClient:
             system_instruction=self._system_instruction,
         )
 
-    def _build_prompt(self, prompt_name: str, context: str, user_input: str) -> str:
+    def _build_prompt(self, prompt_name: str, context: str, user_input: str, history: list = None) -> str:
         template = get_prompt_template(prompt_name)
-        return f"{template}\n\n[CONTEXT]\n{context}\n\n[USER INPUT]\n{user_input}"
+        history_str = ""
+        if history:
+            history_str = "[CONVERSATION HISTORY]\n"
+            for msg in history:
+                role = msg.get("role", "User").capitalize()
+                content = msg.get("content", "")
+                history_str += f"{role}: {content}\n"
+            history_str += "\n"
+        return f"{template}\n\n[CONTEXT]\n{context}\n\n{history_str}[USER INPUT]\n{user_input}"
 
-    def generate(self, prompt_name: str, context: str, user_input: str) -> str:
+    def generate(self, prompt_name: str, context: str, user_input: str, history: list = None) -> str:
         """Synchronously generate ESG content. Never raises — returns error string on failure."""
         try:
-            prompt = self._build_prompt(prompt_name, context, user_input)
+            prompt = self._build_prompt(prompt_name, context, user_input, history)
             response = self._client.models.generate_content(
                 model=self.MODEL,
                 contents=prompt,

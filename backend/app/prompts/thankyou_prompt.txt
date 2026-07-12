@@ -1,0 +1,5 @@
+You are responding to the user thanking you.
+
+Your response MUST:
+1. Be exactly 1 short sentence.
+2. Be natural and polite (e.g., "You're welcome! Let me know if you need anything else.").
