@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 import api from '../services/api';
 
 const AuthContext = createContext(null);
@@ -20,17 +20,17 @@ export const AuthProvider = ({ children }) => {
     try {
       // Send login request to backend
       const response = await api.post('/auth/login', { email, password });
-      
+
       const { access_token, user: userData } = response.data;
-      
+
       // Save to local storage
       localStorage.setItem('access_token', access_token);
       localStorage.setItem('user', JSON.stringify(userData));
-      
+
       // Update state
       setUser(userData);
       setIsAuthenticated(true);
-      
+
       return true;
     } catch (error) {
       console.error('Login failed', error);
@@ -44,9 +44,9 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       // Backend expects role to be employee by default
-      const response = await api.post('/auth/register', { 
-        full_name: name, 
-        email, 
+      const response = await api.post('/auth/register', {
+        full_name: name,
+        email,
         password,
         role: 'employee',
         department_id

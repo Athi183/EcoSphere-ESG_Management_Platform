@@ -35,8 +35,11 @@ const Login = () => {
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Welcome Back</h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Welcome Back</h2>
+        <p className="text-gray-500 mt-2">Enter your credentials to access your dashboard.</p>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
         <div className="relative">
