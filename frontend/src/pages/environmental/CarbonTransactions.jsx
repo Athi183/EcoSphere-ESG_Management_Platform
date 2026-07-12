@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { format } from 'date-fns';
-import { Leaf, Loader2, Plus } from 'lucide-react';
+import { Leaf, Loader2, Plus, Trash2 } from 'lucide-react';
 import { transactionService } from '../../services/transactionService';
 import { departmentService } from '../../services/departmentService';
 import { getEmissionFactors } from '../../services/emissionFactorService';
@@ -45,6 +45,19 @@ const CarbonTransactions = () => {
     }
   });
 
+  // Delete Mutation
+  const deleteMutation = useMutation({
+    mutationFn: transactionService.deleteTransaction,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboardSummary'] });
+      toast.success('Carbon transaction deleted successfully!');
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.detail || 'Failed to delete transaction');
+    }
+  });
+
   const onSubmit = (data) => {
     setIsSubmitting(true);
     // Convert to proper types
@@ -55,6 +68,12 @@ const CarbonTransactions = () => {
       remarks: data.remarks || '',
     };
     createMutation.mutate(payload);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm('Are you sure you want to delete this transaction?')) {
+      deleteMutation.mutate(id);
+    }
   };
 
   const isLoading = loadingTx || loadingDepts || loadingFactors;
@@ -69,6 +88,7 @@ const CarbonTransactions = () => {
 
   const deptList = departments?.data?.items || departments?.items || (Array.isArray(departments) ? departments : []);
   const factorList = emissionFactors?.data?.items || emissionFactors?.items || (Array.isArray(emissionFactors) ? emissionFactors : []);
+  const txList = transactions?.items || (Array.isArray(transactions) ? transactions : []);
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -180,12 +200,13 @@ const CarbonTransactions = () => {
                 <th className="px-6 py-4 font-medium">Quantity</th>
                 <th className="px-6 py-4 font-medium">Calculated CO₂e</th>
                 <th className="px-6 py-4 font-medium">Remarks</th>
+                <th className="px-6 py-4 font-medium text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
-              {transactions.length === 0 ? (
+              {txList.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-12 text-center text-gray-400 dark:text-gray-500">
+                  <td colSpan="7" className="px-6 py-12 text-center text-gray-400 dark:text-gray-500">
                     <div className="flex flex-col items-center justify-center">
                       <Leaf className="w-8 h-8 mb-2 opacity-50" />
                       <p>No carbon transactions found.</p>
@@ -194,7 +215,7 @@ const CarbonTransactions = () => {
                   </td>
                 </tr>
               ) : (
-                transactions.map((tx) => (
+                txList.map((tx) => (
                   <tr key={tx.id} className="hover:bg-gray-50/50 dark:hover:bg-slate-700/50 transition-colors">
                     <td className="px-6 py-4 text-gray-500 dark:text-gray-400 whitespace-nowrap">
                       {format(new Date(tx.transaction_date), 'MMM dd, yyyy HH:mm')}
@@ -213,6 +234,15 @@ const CarbonTransactions = () => {
                     </td>
                     <td className="px-6 py-4 text-gray-500 dark:text-gray-500 text-xs max-w-xs truncate" title={tx.remarks}>
                       {tx.remarks || '-'}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <button
+                        onClick={() => handleDelete(tx.id)}
+                        className="text-red-500 hover:text-red-700 dark:hover:text-red-400 p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                        title="Delete Transaction"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </td>
                   </tr>
                 ))

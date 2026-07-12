@@ -9,7 +9,11 @@ import Categories from './pages/settings/Categories';
 import EmissionFactors from './pages/settings/EmissionFactors';
 
 import Dashboard from './pages/dashboard/Dashboard';
+import EnvironmentalLayout from './pages/environmental/EnvironmentalLayout';
 import CarbonTransactions from './pages/environmental/CarbonTransactions';
+import EnvironmentalDepartments from './pages/environmental/Departments';
+import EnvironmentalCategories from './pages/environmental/Categories';
+import EnvironmentalEmissionFactors from './pages/environmental/EmissionFactors';
 import Gamification from './pages/gamification/Gamification';
 import Social from './pages/social/Social';
 import Reports from './pages/reports/Reports';
@@ -42,7 +46,25 @@ export const router = createBrowserRouter([
           },
           {
             path: '/environmental',
-            element: <CarbonTransactions />
+            element: <EnvironmentalLayout />,
+            children: [
+              {
+                index: true,
+                element: <CarbonTransactions />
+              },
+              {
+                path: 'departments',
+                element: <EnvironmentalDepartments />
+              },
+              {
+                path: 'emission-factors',
+                element: <EnvironmentalEmissionFactors />
+              },
+              {
+                path: 'categories',
+                element: <EnvironmentalCategories />
+              }
+            ]
           },
           {
             path: '/gamification',
