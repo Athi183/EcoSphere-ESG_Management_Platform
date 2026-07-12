@@ -83,7 +83,7 @@ const Register = () => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-env-600 hover:bg-env-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-env-500 transition-colors disabled:opacity-50"
+          className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-base font-bold text-gray-900 bg-env-400 hover:bg-env-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-env-500 transition-colors disabled:opacity-50"
         >
           {loading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Register'}
         </button>

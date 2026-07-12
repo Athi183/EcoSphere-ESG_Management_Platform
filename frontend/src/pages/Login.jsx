@@ -12,7 +12,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       await login(email, password);
       toast.success('Successfully logged in!');
@@ -80,10 +79,6 @@ const Login = () => {
             Register here
           </Link>
         </p>
-      </div>
-
-      <div className="text-center mt-6 text-xs text-gray-400">
-        Hackathon Tip: Use <b>admin</b> / <b>admin</b> to bypass backend
       </div>
     </div>
   );
