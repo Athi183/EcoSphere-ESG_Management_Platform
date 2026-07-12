@@ -1,28 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Users, FileText, HeartHandshake, CheckCircle2, Circle, Plus, Edit2, Trash2, X, Loader2 } from 'lucide-react';
+import { Leaf, Users, Droplet, X, Loader2, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { getCsrActivities, createCsrActivity, getPolicies, createPolicy } from '../../services/socialService';
+import { getCsrActivities, createCsrActivity } from '../../services/socialService';
 import { getCategories } from '../../services/categoryService';
-import ConfirmDialog from '../../components/common/ConfirmDialog';
-
-const StatusBadge = ({ status }) => {
-  const statusConfig = {
-    PLANNED: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200',
-    ONGOING: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 border-amber-200',
-    COMPLETED: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200',
-    ACTIVE: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border-emerald-200',
-    DRAFT: 'bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-300 border-gray-200',
-  };
-  
-  const className = statusConfig[status] || statusConfig.DRAFT;
-  
-  return (
-    <span className={`px-3 py-1 rounded-full text-xs font-bold border ${className}`}>
-      {status}
-    </span>
-  );
-};
+import { getParticipations, approveParticipation, joinActivity } from '../../services/gamificationService';
 
 // --- CSR Activity Modal ---
 const CsrModal = ({ isOpen, onClose }) => {
@@ -60,8 +42,8 @@ const CsrModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-xl shadow-2xl border border-gray-100 dark:border-slate-700 flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm">
+      <div className="bg-white dark:bg-slate-800 rounded-xl w-full max-w-xl shadow-2xl border border-gray-200 dark:border-slate-700 flex flex-col max-h-[90vh]">
         <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-700">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Create CSR Activity</h2>
           <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
@@ -71,11 +53,11 @@ const CsrModal = ({ isOpen, onClose }) => {
         <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4">
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Title</label>
-            <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-env-500 outline-none dark:text-white" />
+            <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-env-500 outline-none text-gray-900 dark:text-white" />
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Category</label>
-            <select required value={formData.category_id} onChange={e => setFormData({...formData, category_id: parseInt(e.target.value)})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-env-500 outline-none dark:text-white">
+            <select required value={formData.category_id} onChange={e => setFormData({...formData, category_id: parseInt(e.target.value)})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-env-500 outline-none text-gray-900 dark:text-white">
               <option value="">Select Category...</option>
               {categories.map(c => (
                 <option key={c.id} value={c.id}>{c.name}</option>
@@ -84,20 +66,20 @@ const CsrModal = ({ isOpen, onClose }) => {
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Description</label>
-            <textarea required rows={3} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-env-500 outline-none dark:text-white" />
+            <textarea required rows={3} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-env-500 outline-none text-gray-900 dark:text-white" />
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Location</label>
-            <input required type="text" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-env-500 outline-none dark:text-white" />
+            <input required type="text" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-env-500 outline-none text-gray-900 dark:text-white" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Date</label>
-              <input required type="date" value={formData.activity_date} onChange={e => setFormData({...formData, activity_date: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-env-500 outline-none dark:text-white" />
+              <input required type="date" value={formData.activity_date} onChange={e => setFormData({...formData, activity_date: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-env-500 outline-none text-gray-900 dark:text-white" />
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Status</label>
-              <select required value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-env-500 outline-none dark:text-white">
+              <select required value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-env-500 outline-none text-gray-900 dark:text-white">
                 <option value="PLANNED">PLANNED</option>
                 <option value="ONGOING">ONGOING</option>
                 <option value="COMPLETED">COMPLETED</option>
@@ -105,81 +87,9 @@ const CsrModal = ({ isOpen, onClose }) => {
             </div>
           </div>
           <div className="pt-4 flex justify-end gap-3">
-            <button type="button" onClick={onClose} className="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-slate-700 rounded-xl transition-colors">Cancel</button>
-            <button type="submit" disabled={createMutation.isPending} className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-env-600 hover:bg-env-700 rounded-xl transition-colors disabled:opacity-50">
+            <button type="button" onClick={onClose} className="px-5 py-2.5 text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors">Cancel</button>
+            <button type="submit" disabled={createMutation.isPending} className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-env-600 hover:bg-env-700 rounded-lg transition-colors disabled:opacity-50">
               {createMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />} Create Activity
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-};
-
-// --- Policy Modal ---
-const PolicyModal = ({ isOpen, onClose }) => {
-  const queryClient = useQueryClient();
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    version: '1.0',
-    effective_date: new Date().toISOString().split('T')[0],
-    status: 'DRAFT'
-  });
-
-  const createMutation = useMutation({
-    mutationFn: createPolicy,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['policies'] });
-      toast.success('Policy created successfully');
-      onClose();
-    },
-    onError: (error) => toast.error(error.response?.data?.message || 'Failed to create policy')
-  });
-
-  if (!isOpen) return null;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    createMutation.mutate(formData);
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/50 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-800 rounded-3xl w-full max-w-xl shadow-2xl border border-gray-100 dark:border-slate-700 flex flex-col max-h-[90vh]">
-        <div className="flex items-center justify-between p-6 border-b border-gray-100 dark:border-slate-700">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Create Internal Policy</h2>
-          <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4">
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Title</label>
-            <input required type="text" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-env-500 outline-none dark:text-white" />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Description</label>
-            <textarea required rows={3} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-env-500 outline-none dark:text-white" />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Version</label>
-              <input required type="text" value={formData.version} onChange={e => setFormData({...formData, version: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-env-500 outline-none dark:text-white" placeholder="1.0" />
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Status</label>
-              <select required value={formData.status} onChange={e => setFormData({...formData, status: e.target.value})} className="w-full px-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-env-500 outline-none dark:text-white">
-                <option value="DRAFT">DRAFT</option>
-                <option value="ACTIVE">ACTIVE</option>
-                <option value="ARCHIVED">ARCHIVED</option>
-              </select>
-            </div>
-          </div>
-          <div className="pt-4 flex justify-end gap-3">
-            <button type="button" onClick={onClose} className="px-5 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-slate-700 rounded-xl transition-colors">Cancel</button>
-            <button type="submit" disabled={createMutation.isPending} className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-env-600 hover:bg-env-700 rounded-xl transition-colors disabled:opacity-50">
-              {createMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />} Create Policy
             </button>
           </div>
         </form>
@@ -190,170 +100,164 @@ const PolicyModal = ({ isOpen, onClose }) => {
 
 
 const Social = () => {
-  const [activeTab, setActiveTab] = useState('csr');
+  const queryClient = useQueryClient();
   const [isCsrModalOpen, setIsCsrModalOpen] = useState(false);
-  const [isPolicyModalOpen, setIsPolicyModalOpen] = useState(false);
 
   const { data: csrData, isLoading: isLoadingCsr } = useQuery({
     queryKey: ['csr_activities'],
     queryFn: () => getCsrActivities({ skip: 0, limit: 100 })
   });
 
-  const { data: policiesData, isLoading: isLoadingPolicies } = useQuery({
-    queryKey: ['policies'],
-    queryFn: () => getPolicies({ skip: 0, limit: 100 })
+  const { data: participations } = useQuery({
+    queryKey: ['participations'],
+    queryFn: getParticipations
+  });
+
+  const joinMutation = useMutation({
+    mutationFn: (activityId) => joinActivity({ activity_id: activityId, proof_url: 'joined.jpg' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['participations'] });
+      toast.success('Successfully joined the activity!');
+    }
+  });
+
+  const approveMutation = useMutation({
+    mutationFn: (partId) => approveParticipation(partId, 50),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['participations'] });
+      toast.success('Participation approved & points awarded!');
+    }
   });
 
   const csrActivities = csrData?.data?.items || [];
-  const policies = policiesData?.data?.items || [];
+
+  const getIcon = (title) => {
+    const t = title.toLowerCase();
+    if (t.includes('tree') || t.includes('plant')) return <Leaf className="w-4 h-4 text-green-500" />;
+    if (t.includes('blood') || t.includes('water')) return <Droplet className="w-4 h-4 text-red-500" />;
+    return <Users className="w-4 h-4 text-orange-500" />;
+  };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
-      {/* Header */}
-      <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center gap-3">
-            <HeartHandshake className="w-8 h-8 text-pink-500" />
-            Social & Governance
-          </h1>
-          <p className="mt-2 text-gray-500 dark:text-gray-400 max-w-2xl">
-            Track our Corporate Social Responsibility (CSR) initiatives and review our internal sustainability policies.
-          </p>
-        </div>
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      
+      <div className="space-y-6 pt-2">
         
-        {/* Dynamic Add Button */}
-        <button 
-          onClick={() => activeTab === 'csr' ? setIsCsrModalOpen(true) : setIsPolicyModalOpen(true)}
-          className="flex items-center gap-2 px-6 py-3 bg-gray-900 hover:bg-gray-800 dark:bg-env-600 dark:hover:bg-env-500 text-white rounded-xl shadow-md transition-all duration-300 font-bold group"
-        >
-          <Plus className="w-5 h-5 group-hover:scale-110 transition-transform" />
-          {activeTab === 'csr' ? 'Add Activity' : 'Add Policy'}
-        </button>
-      </div>
+        {/* Top Actions */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <button 
+            onClick={() => setIsCsrModalOpen(true)}
+            className="flex items-center gap-2 px-5 py-2.5 bg-env-600 hover:bg-env-700 text-white rounded-lg font-bold transition-colors shadow-sm"
+          >
+            + Create Activity
+          </button>
+        </div>
 
-      {/* Custom Tabs */}
-      <div className="flex gap-2 p-1 bg-gray-100/50 dark:bg-slate-800/50 rounded-xl max-w-md w-full backdrop-blur-sm border border-gray-200/50 dark:border-slate-700/50">
-        <button
-          onClick={() => setActiveTab('csr')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all duration-300 ${
-            activeTab === 'csr'
-              ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-sm'
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-          }`}
-        >
-          <Users className="w-4 h-4" />
-          CSR Activities
-        </button>
-        <button
-          onClick={() => setActiveTab('policies')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-semibold text-sm transition-all duration-300 ${
-            activeTab === 'policies'
-              ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-sm'
-              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-          }`}
-        >
-          <FileText className="w-4 h-4" />
-          Internal Policies
-        </button>
-      </div>
-
-      {/* Content Area */}
-      <div className="mt-8 relative min-h-[400px]">
-        {/* CSR Activities Tab */}
-        {activeTab === 'csr' && (
-          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {isLoadingCsr ? (
-                Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="h-48 bg-white dark:bg-slate-800 rounded-3xl animate-pulse"></div>
-                ))
-              ) : csrActivities.length === 0 ? (
-                <div className="col-span-full py-12 text-center bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700">
-                  <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">No CSR Activities found</h3>
-                </div>
-              ) : (
-                csrActivities.map((activity) => (
-                  <div key={activity.id} className="group relative bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-sm hover:shadow-lg transition-all border border-gray-100 dark:border-slate-700 flex flex-col h-full overflow-hidden">
-                    <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2 pr-8">{activity.title}</h3>
-                      <StatusBadge status={activity.status} />
-                    </div>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-6 flex-1">{activity.description}</p>
-                    <div className="pt-4 border-t border-gray-100 dark:border-slate-700 flex justify-between items-center text-sm">
-                      <span className="text-gray-500 dark:text-gray-400">{activity.location || 'N/A'}</span>
-                      <span className="text-gray-500 dark:text-gray-400">Date: {new Date(activity.activity_date).toLocaleDateString()}</span>
-                    </div>
-                    
-                    {/* Hover actions */}
-                    <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                      <button className="p-1.5 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 rounded-md text-gray-600 dark:text-gray-300">
-                        <Edit2 className="w-3.5 h-3.5" />
-                      </button>
-                      <button className="p-1.5 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 rounded-md text-red-600 dark:text-red-400">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+        {/* CSR Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {isLoadingCsr ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="h-48 bg-gray-100 dark:bg-slate-800 rounded-2xl animate-pulse"></div>
+            ))
+          ) : csrActivities.length === 0 ? (
+            <div className="col-span-full py-12 text-center border-2 border-dashed border-gray-200 dark:border-slate-700 rounded-2xl">
+              <Users className="w-12 h-12 text-gray-300 dark:text-slate-600 mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">No CSR Activities found</h3>
+              <p className="text-gray-500 dark:text-gray-400">Create a new activity to engage employees.</p>
+            </div>
+          ) : (
+            csrActivities.map((activity) => {
+              // Count how many people joined this specific activity
+              const joinedCount = participations?.filter(p => p.activity_title === activity.title).length || 0;
+              
+              return (
+                <div 
+                  key={activity.id}
+                  className="group relative bg-white dark:bg-slate-800 rounded-2xl p-5 border-2 border-env-500/20 hover:border-env-500 hover:shadow-lg transition-all flex flex-col"
+                >
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-sm font-bold text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                      {getIcon(activity.title)}
+                      {activity.title}
+                    </h3>
                   </div>
-                ))
-              )}
-            </div>
-          </div>
-        )}
+                  
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    {joinedCount} joined
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-6">
+                    {activity.status === 'PLANNED' ? 'Open' : 'Evidence Required'}
+                  </div>
+                  
+                  <div className="mt-auto flex justify-between items-center">
+                    <button 
+                      onClick={() => joinMutation.mutate(activity.id)}
+                      disabled={joinMutation.isPending}
+                      className="px-6 py-2 bg-env-600 hover:bg-env-700 text-white rounded-lg font-bold transition-colors text-sm disabled:opacity-50"
+                    >
+                      Join
+                    </button>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
 
-        {/* Policies Tab */}
-        {activeTab === 'policies' && (
-          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden">
-              {isLoadingPolicies ? (
-                <div className="p-8 text-center animate-pulse text-gray-400">Loading policies...</div>
-              ) : policies.length === 0 ? (
-                <div className="py-12 text-center">
-                  <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">No policies found</h3>
-                </div>
-              ) : (
-                <div className="divide-y divide-gray-100 dark:divide-slate-700">
-                  {policies.map((policy) => (
-                    <div key={policy.id} className="group p-6 hover:bg-gray-50 dark:hover:bg-slate-750 transition-colors flex items-start gap-4">
-                      <div className="mt-1">
-                        {policy.status === 'ACTIVE' ? (
-                          <CheckCircle2 className="w-6 h-6 text-emerald-500" />
-                        ) : (
-                          <Circle className="w-6 h-6 text-gray-300 dark:text-gray-600" />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex justify-between items-start">
-                          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{policy.title} <span className="text-sm font-normal text-gray-400 ml-2">v{policy.version}</span></h3>
-                          <div className="flex items-center gap-4">
-                             <div className="opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity duration-200">
-                                <button className="p-1 hover:bg-gray-200 dark:hover:bg-slate-600 rounded text-gray-500">
-                                  <Edit2 className="w-4 h-4" />
-                                </button>
-                                <button className="p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded text-red-500">
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                             </div>
-                             <StatusBadge status={policy.status} />
-                          </div>
-                        </div>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">{policy.description}</p>
-                        <div className="mt-4 text-xs font-medium text-gray-400 dark:text-gray-500">
-                          Last Updated: {new Date(policy.updated_at || policy.created_at).toLocaleDateString()}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+      {/* Dynamic Employee Participation Table */}
+      <div className="mt-12">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Employee Participation: approval queue</h2>
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-gray-50 dark:bg-slate-800 border-b border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-400 font-semibold">
+              <tr>
+                <th className="px-6 py-4">Employee</th>
+                <th className="px-6 py-4">Activity/Challenge</th>
+                <th className="px-6 py-4">Proof</th>
+                <th className="px-6 py-4">Points</th>
+                <th className="px-6 py-4">Approval</th>
+                <th className="px-6 py-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
+              {participations?.map(part => (
+                <tr key={part.id} className="hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors">
+                  <td className="px-6 py-4 text-gray-900 dark:text-white font-medium">{part.user_name}</td>
+                  <td className="px-6 py-4 text-gray-600 dark:text-gray-300">{part.activity_title}</td>
+                  <td className="px-6 py-4 text-env-500 dark:text-env-400 cursor-pointer hover:underline">{part.proof_url || '-'}</td>
+                  <td className="px-6 py-4 text-gray-600 dark:text-gray-300">{part.points_awarded || 0}</td>
+                  <td className="px-6 py-4">
+                    {part.status === 'PENDING' ? (
+                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-500/50">Pending</span>
+                    ) : (
+                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-500/50">Approved</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    {part.status === 'PENDING' && (
+                      <button 
+                        onClick={() => approveMutation.mutate(part.id)}
+                        className="px-4 py-1.5 bg-env-600 hover:bg-env-700 text-white font-bold rounded-lg transition-colors text-xs flex items-center gap-1 ml-auto"
+                      >
+                        <Check className="w-3 h-3" />
+                        Approve
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {(!participations || participations.length === 0) && (
+                <tr>
+                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">No participation requests in the queue.</td>
+                </tr>
               )}
-            </div>
-          </div>
-        )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <CsrModal isOpen={isCsrModalOpen} onClose={() => setIsCsrModalOpen(false)} />
-      <PolicyModal isOpen={isPolicyModalOpen} onClose={() => setIsPolicyModalOpen(false)} />
     </div>
   );
 };
