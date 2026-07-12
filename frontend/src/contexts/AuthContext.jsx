@@ -33,6 +33,11 @@ export const AuthProvider = ({ children }) => {
 
       // Now fetch the actual user profile using the token
       const userResponse = await api.get('/auth/me');
+      
+      if (!userResponse.data.success) {
+        throw new Error(userResponse.data.message || 'Failed to fetch user profile');
+      }
+      
       const userData = userResponse.data.data;
 
       // Save user to local storage
@@ -45,7 +50,9 @@ export const AuthProvider = ({ children }) => {
       return true;
     } catch (error) {
       console.error('Login failed', error);
-      throw error;
+      // Ensure we extract the correct error message whether it's HTTP 200 {success: false} or HTTP 400
+      const message = error.response?.data?.detail || error.response?.data?.message || error.message || 'Login failed';
+      throw new Error(message);
     } finally {
       setLoading(false);
     }
@@ -62,10 +69,16 @@ export const AuthProvider = ({ children }) => {
         role: 'employee',
         department_id
       });
+      
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Registration failed');
+      }
+      
       return response.data;
     } catch (error) {
       console.error('Registration failed', error);
-      throw error;
+      const message = error.response?.data?.detail || error.response?.data?.message || error.message || 'Registration failed';
+      throw new Error(message);
     } finally {
       setLoading(false);
     }

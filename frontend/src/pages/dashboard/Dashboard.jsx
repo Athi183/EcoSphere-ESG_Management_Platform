@@ -169,11 +169,11 @@ const Dashboard = () => {
                     <td className="px-6 py-4 font-medium text-gray-900 dark:text-gray-200">{tx.department?.name}</td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-slate-700 text-gray-800 dark:text-gray-300">
-                        {tx.emission_source?.source_name}
+                        {tx.emission_factor?.source_name}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-gray-600 dark:text-gray-400">
-                      {tx.quantity} {tx.emission_source?.unit}
+                      {tx.quantity} {tx.emission_factor?.unit}
                     </td>
                     <td className="px-6 py-4 font-semibold text-env-600 dark:text-env-400">
                       {tx.calculated_emission.toFixed(2)}
