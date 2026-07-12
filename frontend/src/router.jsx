@@ -6,13 +6,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import EmissionFactors from './pages/settings/EmissionFactors';
 
-// Placeholder for the main dashboard until we build it
-const DashboardPlaceholder = () => (
-  <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 text-center">
-    <h2 className="text-2xl font-bold text-gray-800 mb-4">You are successfully logged in!</h2>
-    <p className="text-gray-500">Phase 3 (The Dashboard) is ready to be built next.</p>
-  </div>
-);
+import Dashboard from './pages/dashboard/Dashboard';
+import CarbonTransactions from './pages/environmental/CarbonTransactions';
 
 export const router = createBrowserRouter([
   {
@@ -38,13 +33,16 @@ export const router = createBrowserRouter([
         children: [
           {
             path: '/',
-            element: <DashboardPlaceholder />
+            element: <Dashboard />
+          },
+          {
+            path: '/environmental',
+            element: <CarbonTransactions />
           },
           {
             path: '/settings/emission-factors',
             element: <EmissionFactors />
           }
-          // Future routes will go here (e.g. /environmental, /social)
         ]
       }
     ]

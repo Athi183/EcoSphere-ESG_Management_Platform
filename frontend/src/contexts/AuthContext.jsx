@@ -21,10 +21,21 @@ export const AuthProvider = ({ children }) => {
       // Send login request to backend
       const response = await api.post('/auth/login', { email, password });
 
-      const { access_token, user: userData } = response.data;
+      if (!response.data.success) {
+        throw new Error(response.data.message || 'Login failed');
+      }
 
-      // Save to local storage
+      // The backend returns the token nested in response.data.data
+      const { access_token } = response.data.data;
+
+      // Save token to local storage so api.js can use it for the next request
       localStorage.setItem('access_token', access_token);
+
+      // Now fetch the actual user profile using the token
+      const userResponse = await api.get('/auth/me');
+      const userData = userResponse.data.data;
+
+      // Save user to local storage
       localStorage.setItem('user', JSON.stringify(userData));
 
       // Update state

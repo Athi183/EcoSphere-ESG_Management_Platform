@@ -28,7 +28,9 @@
   --color-gov-900: #312e81;
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 body {
   font-family: 'Outfit', sans-serif;
-  background-color: #f8fafc;
+  @apply bg-slate-50 text-slate-900 dark:bg-[#0b1120] dark:text-slate-100 transition-colors duration-300;
 }

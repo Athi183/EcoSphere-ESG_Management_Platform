@@ -42,7 +42,11 @@ export const deleteEmissionFactor = async (id) => {
     toast.success('Emission factor deleted successfully');
     return response.data;
   } catch (error) {
-    toast.error(error.response?.data?.message || error.message || 'Failed to delete emission factor');
+    let errorMessage = error.response?.data?.message;
+    if (!errorMessage && error.message === 'Network Error') {
+      errorMessage = 'Cannot delete this emission factor because it is used in existing carbon transactions.';
+    }
+    toast.error(errorMessage || error.message || 'Failed to delete emission factor');
     throw error;
   }
 };
