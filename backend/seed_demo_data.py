@@ -39,8 +39,8 @@ def seed_demo_data():
         admin = User(
             full_name="Admin User",
             email="admin@ecosphere.com",
-            password_hash=get_password_hash("Admin@123"),
-            role=UserRole.admin
+            hashed_password=get_password_hash("Admin@123"),
+            role=UserRole.ADMIN
         )
         db.add(admin)
 
@@ -57,8 +57,8 @@ def seed_demo_data():
             emp = User(
                 full_name=name,
                 email=email,
-                password_hash=get_password_hash("Employee@123"),
-                role=UserRole.employee
+                hashed_password=get_password_hash("Employee@123"),
+                role=UserRole.EMPLOYEE
             )
             db.add(emp)
             db_employees.append(emp)
@@ -85,7 +85,6 @@ def seed_demo_data():
         for name, count in depts_data:
             dept = Department(
                 name=name,
-                code=name[:3].upper(),
                 employee_count=count,
                 status=DepartmentStatus.ACTIVE
             )
@@ -115,7 +114,7 @@ def seed_demo_data():
             ef = EmissionFactor(
                 source_name=source,
                 unit=unit,
-                emission_factor=factor,
+                factor=factor,
                 status=EmissionFactorStatus.ACTIVE
             )
             db.add(ef)
@@ -163,8 +162,7 @@ def seed_demo_data():
             pol = ESGPolicy(
                 title=title,
                 description=f"This is the official document for {title}. It outlines the primary objectives, responsibilities, and key performance indicators required to maintain compliance.",
-                version="1.0",
-                effective_date=datetime.now(timezone.utc).date(),
+                document_url=f"https://ecosphere.com/docs/{title.replace(' ', '_').lower()}.pdf",
                 status=status
             )
             db.add(pol)
@@ -196,9 +194,8 @@ def seed_demo_data():
             act = CSRActivity(
                 title=title,
                 description=f"Detailed plan and execution strategy for {title}.",
-                location="Main Campus",
                 category_id=random.choice(db_csr_cats).id,
-                activity_date=(now + timedelta(days=day_offset)).date(),
+                date=now + timedelta(days=day_offset),
                 status=status
             )
             db.add(act)
@@ -307,7 +304,7 @@ def seed_demo_data():
                 days_ago = random.randint(1, 90)
                 tx_date = now - timedelta(days=days_ago)
                 
-                calc_em = qty * ef.emission_factor
+                calc_em = qty * ef.factor
                 
                 tx = CarbonTransaction(
                     department_id=dept.id,
