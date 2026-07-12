@@ -8,6 +8,8 @@ import EmissionFactors from './pages/settings/EmissionFactors';
 
 import Dashboard from './pages/dashboard/Dashboard';
 import CarbonTransactions from './pages/environmental/CarbonTransactions';
+import Gamification from './pages/gamification/Gamification';
+import Social from './pages/social/Social';
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +44,14 @@ export const router = createBrowserRouter([
           {
             path: '/settings/emission-factors',
             element: <EmissionFactors />
+          },
+          {
+            path: '/gamification',
+            element: <Gamification />
+          },
+          {
+            path: '/social',
+            element: <Social />
           }
         ]
       }

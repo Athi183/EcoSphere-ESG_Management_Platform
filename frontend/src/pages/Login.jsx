@@ -12,18 +12,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // TEMPORARY HACKATHON SHORTCUT: 
-    // If backend isn't ready yet, let them bypass by clicking login with admin/admin
-    if (email === 'admin' && password === 'admin') {
-      const mockUser = { id: 1, name: 'Admin User', role: 'admin' };
-      localStorage.setItem('access_token', 'mock-token');
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      // Need to reload window to update auth state cleanly
-      window.location.href = '/'; 
-      return;
-    }
-
     try {
       await login(email, password);
       toast.success('Successfully logged in!');
@@ -91,10 +79,6 @@ const Login = () => {
             Register here
           </Link>
         </p>
-      </div>
-
-      <div className="text-center mt-6 text-xs text-gray-400">
-        Hackathon Tip: Use <b>admin</b> / <b>admin</b> to bypass backend
       </div>
     </div>
   );
