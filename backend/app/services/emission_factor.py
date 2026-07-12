@@ -35,5 +35,9 @@ def update_emission_factor(db: Session, db_ef: EmissionFactor, ef_in: EmissionFa
     return db_ef
 
 def delete_emission_factor(db: Session, db_ef: EmissionFactor):
+    if db_ef.transactions:
+        return "Cannot delete this emission factor because it is referenced by existing carbon transactions."
+        
     db.delete(db_ef)
     db.commit()
+    return None

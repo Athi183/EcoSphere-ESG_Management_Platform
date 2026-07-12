@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.orm import Session
 from app.database.database import get_db
 from app.routers.auth import get_current_user
@@ -51,10 +51,15 @@ def update_department(dept_id: int, dept_in: DepartmentUpdate, db: Session = Dep
     return {"success": True, "message": "Department updated successfully", "data": DepartmentResponse.model_validate(updated_dept).model_dump()}
 
 @router.delete("/{dept_id}")
-def delete_department(dept_id: int, db: Session = Depends(get_db)):
+def delete_department(dept_id: int, response: Response, db: Session = Depends(get_db)):
     dept = dept_service.get_department_by_id(db, dept_id)
     if not dept:
+        response.status_code = 404
         return {"success": False, "message": "Department not found", "data": {}}
     
-    dept_service.delete_department(db, dept)
+    err = dept_service.delete_department(db, dept)
+    if err:
+        response.status_code = 400
+        return {"success": False, "message": err, "data": {}}
+        
     return {"success": True, "message": "Department deleted successfully", "data": {}}

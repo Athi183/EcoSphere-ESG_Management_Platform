@@ -39,5 +39,13 @@ def update_department(db: Session, db_dept: Department, dept_in: DepartmentUpdat
     return db_dept
 
 def delete_department(db: Session, db_dept: Department):
+    if db_dept.transactions:
+        return "Cannot delete this department because it is referenced by existing carbon transactions."
+    
+    child_dept = db.query(Department).filter(Department.parent_department_id == db_dept.id).first()
+    if child_dept:
+        return "Cannot delete this department because it has child departments."
+        
     db.delete(db_dept)
     db.commit()
+    return None
