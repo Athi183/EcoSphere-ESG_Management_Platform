@@ -4,7 +4,7 @@ import { Trophy, Star, Clock, Target, Edit2, Trash2, X, Loader2 } from 'lucide-r
 import toast from 'react-hot-toast';
 import { getChallenges, createChallenge, updateChallenge, deleteChallenge } from '../../services/challengeService';
 import { getCategories } from '../../services/categoryService';
-import { getBadges, getLeaderboard } from '../../services/gamificationService';
+import { getBadges, getLeaderboard, joinChallenge } from '../../services/gamificationService';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 
 const statusConfig = {
@@ -166,20 +166,31 @@ const Gamification = () => {
   const [challengeToEdit, setChallengeToEdit] = useState(null);
   const [deleteDialog, setDeleteDialog] = useState({ isOpen: false, id: null });
   const [statusFilter, setStatusFilter] = useState('ALL');
+  
+  // Join Modal State
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
+  const [selectedChallengeToJoin, setSelectedChallengeToJoin] = useState(null);
+  const [proofUrl, setProofUrl] = useState('');
 
-  const { data: response, isLoading } = useQuery({
+  const { data: challengesData, isLoading, refetch } = useQuery({
     queryKey: ['challenges'],
-    queryFn: () => getChallenges({ skip: 0, limit: 100 })
+    queryFn: () => getChallenges({ skip: 0, limit: 100 }),
   });
 
-  const { data: badgesResponse } = useQuery({
-    queryKey: ['badges'],
-    queryFn: getBadges
-  });
+  const { data: badgesResponse } = useQuery({ queryKey: ['badges'], queryFn: getBadges });
+  const { data: leaderboardResponse } = useQuery({ queryKey: ['leaderboard'], queryFn: getLeaderboard });
 
-  const { data: leaderboardResponse } = useQuery({
-    queryKey: ['leaderboard'],
-    queryFn: getLeaderboard
+  const joinMutation = useMutation({
+    mutationFn: joinChallenge,
+    onSuccess: () => {
+      toast.success('Successfully joined the challenge!');
+      setIsJoinModalOpen(false);
+      setProofUrl('');
+      setSelectedChallengeToJoin(null);
+    },
+    onError: () => {
+      toast.error('Failed to join challenge. Please try again.');
+    }
   });
 
   const deleteMutation = useMutation({
@@ -192,7 +203,7 @@ const Gamification = () => {
     onError: (error) => toast.error(error.response?.data?.message || 'Failed to delete challenge')
   });
 
-  const allChallenges = response?.data?.items || [];
+  const allChallenges = challengesData?.data?.items || [];
   const challenges = statusFilter === 'ALL' ? allChallenges : allChallenges.filter(c => c.status === statusFilter);
 
   const handleEdit = (challenge) => {
@@ -292,7 +303,13 @@ const Gamification = () => {
                   </div>
                   
                   <div className="mt-auto pt-4 flex justify-between items-center">
-                    <button className="px-6 py-2 bg-env-600 hover:bg-env-700 text-white rounded-lg font-bold transition-colors w-1/2">
+                    <button 
+                      onClick={() => {
+                        setSelectedChallengeToJoin(challenge);
+                        setIsJoinModalOpen(true);
+                      }}
+                      className="px-6 py-2 bg-env-600 hover:bg-env-700 text-white rounded-lg font-bold transition-colors w-1/2"
+                    >
                       Join Challenge
                     </button>
                     
@@ -390,6 +407,58 @@ const Gamification = () => {
         confirmText="Delete"
         isDestructive={true}
       />
+
+      {/* Join Challenge Modal */}
+      {isJoinModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-md shadow-xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-6 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center shrink-0">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">Submit Challenge Proof</h2>
+              <button onClick={() => { setIsJoinModalOpen(false); setSelectedChallengeToJoin(null); }} className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto">
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                You are joining: <span className="font-bold">{selectedChallengeToJoin?.title}</span>
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Proof URL (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={proofUrl}
+                    onChange={(e) => setProofUrl(e.target.value)}
+                    placeholder="Link to your photo, document, or post"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-env-500 focus:border-env-500 bg-white dark:bg-slate-900 text-gray-900 dark:text-white"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-gray-100 dark:border-slate-700 bg-gray-50 dark:bg-slate-900/50 flex justify-end gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => { setIsJoinModalOpen(false); setSelectedChallengeToJoin(null); }}
+                className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={joinMutation.isPending}
+                onClick={() => joinMutation.mutate({ challenge_id: selectedChallengeToJoin?.id, proof_url: proofUrl })}
+                className="px-4 py-2 text-sm font-medium text-white bg-env-600 border border-transparent rounded-lg hover:bg-env-700 focus:ring-2 focus:ring-offset-2 focus:ring-env-500 disabled:opacity-50 flex items-center gap-2"
+              >
+                {joinMutation.isPending ? 'Submitting...' : 'Submit Proof'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

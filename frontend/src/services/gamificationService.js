@@ -24,3 +24,8 @@ export const approveParticipation = async (partId, points = 50) => {
   const response = await api.post(`/gamification/participations/${partId}/approve?points=${points}`);
   return response.data;
 };
+
+export const joinChallenge = async (data) => {
+  const response = await api.post('/gamification/challenges/participate', data);
+  return response.data;
+};
