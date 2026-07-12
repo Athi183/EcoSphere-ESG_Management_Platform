@@ -1,5 +1,6 @@
 import enum
 from sqlalchemy import Column, Integer, String, Float, DateTime, Enum
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database.database import Base
 
@@ -18,3 +19,5 @@ class EmissionFactor(Base):
     status = Column(Enum(EmissionFactorStatus), default=EmissionFactorStatus.ACTIVE, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+    transactions = relationship("CarbonTransaction", back_populates="emission_factor")
