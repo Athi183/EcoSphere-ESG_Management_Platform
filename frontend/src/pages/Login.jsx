@@ -24,43 +24,43 @@ const Login = () => {
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Welcome Back</h2>
-        <p className="text-gray-500 mt-2">Enter your credentials to access your dashboard.</p>
+        <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Welcome Back</h2>
+        <p className="text-gray-500 dark:text-gray-400 mt-2">Enter your credentials to access your dashboard.</p>
       </div>
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Mail className="h-5 w-5 text-gray-400" />
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Mail className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2 bg-white dark:bg-slate-900 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-700 rounded-lg focus:ring-env-500 focus:border-env-500 sm:text-sm outline-none transition-colors placeholder-gray-400 dark:placeholder-gray-500"
+              placeholder="you@company.com"
+            />
           </div>
-          <input
-            type="text"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-env-500 focus:border-env-500 sm:text-sm outline-none transition-colors"
-            placeholder="you@company.com"
-          />
         </div>
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Lock className="h-5 w-5 text-gray-400" />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Lock className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2 bg-white dark:bg-slate-900 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-700 rounded-lg focus:ring-env-500 focus:border-env-500 sm:text-sm outline-none transition-colors placeholder-gray-400 dark:placeholder-gray-500"
+              placeholder="••••••••"
+            />
           </div>
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-env-500 focus:border-env-500 sm:text-sm outline-none transition-colors"
-            placeholder="••••••••"
-          />
         </div>
-      </div>
 
       <button
         type="submit"
@@ -73,9 +73,9 @@ const Login = () => {
       </form>
 
       <div className="text-center mt-6">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Don't have an account?{' '}
-          <Link to="/register" className="font-medium text-env-600 hover:text-env-500">
+          <Link to="/register" className="font-medium text-env-600 dark:text-env-400 hover:text-env-500">
             Register here
           </Link>
         </p>

@@ -308,7 +308,7 @@ const CrudTable = ({
                     {field.type === 'select' ? (
                       <select
                         {...register(field.name, { required: field.required && `${field.label} is required` })}
-                        className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-env-500 outline-none transition-shadow dark:text-white"
+                        className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-env-500 outline-none transition-shadow"
                       >
                         {field.options.map(opt => (
                           <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -318,7 +318,7 @@ const CrudTable = ({
                       <textarea
                         {...register(field.name, { required: field.required && `${field.label} is required` })}
                         rows={3}
-                        className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-env-500 outline-none transition-shadow resize-none dark:text-white"
+                        className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-env-500 outline-none transition-shadow resize-none"
                         placeholder={field.placeholder || ''}
                       />
                     ) : (
@@ -329,7 +329,7 @@ const CrudTable = ({
                           required: field.required && `${field.label} is required`,
                           min: field.min !== undefined ? { value: field.min, message: `Must be at least ${field.min}` } : undefined
                         })}
-                        className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-env-500 outline-none transition-shadow dark:text-white"
+                        className="w-full px-3 py-2 text-sm rounded-xl border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-env-500 outline-none transition-shadow"
                         placeholder={field.placeholder || ''}
                       />
                     )}
