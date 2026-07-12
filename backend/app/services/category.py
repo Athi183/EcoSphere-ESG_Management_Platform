@@ -39,6 +39,9 @@ def delete_category(db: Session, db_cat: Category):
     if db_cat.csr_activities:
         return "Cannot delete this category because it is referenced by existing CSR activities."
         
+    if db_cat.challenges:
+        return "Cannot delete this category because it is referenced by existing Challenges."
+        
     db.delete(db_cat)
     db.commit()
     return None

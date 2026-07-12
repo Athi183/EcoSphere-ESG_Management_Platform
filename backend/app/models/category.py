@@ -23,6 +23,7 @@ class Category(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
     csr_activities = relationship("CSRActivity", back_populates="category")
+    challenges = relationship("Challenge", back_populates="category")
 
     __table_args__ = (
         UniqueConstraint('name', 'type', name='uq_category_name_type'),

@@ -5,3 +5,4 @@ from .emission_factor import EmissionFactorCreate, EmissionFactorUpdate, Emissio
 from .carbon_transaction import CarbonTransactionCreate, CarbonTransactionResponse
 from .policy import ESGPolicyCreate, ESGPolicyUpdate, ESGPolicyResponse
 from .csr_activity import CSRActivityCreate, CSRActivityUpdate, CSRActivityResponse
+from .challenge import ChallengeCreate, ChallengeUpdate, ChallengeResponse
